@@ -77,8 +77,22 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --radius: 0.5rem;
+  --font-body:
+    "Inter Tight", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --brand: oklch(0.208 0.042 265.755);
+  --brand-foreground: oklch(0.984 0.003 247.858);
+  --brand-muted: oklch(0.279 0.041 260.031);
+  --success: oklch(0.596 0.145 163.225);
+  --success-foreground: oklch(0.99 0.01 160);
+  --success-soft: oklch(0.96 0.03 165);
+  --warning: oklch(0.72 0.17 62);
+  --warning-foreground: oklch(0.26 0.07 55);
+  --warning-soft: oklch(0.97 0.04 80);
+  --danger: oklch(0.47 0.19 26);
+  --danger-foreground: oklch(0.99 0.01 20);
+  --danger-soft: oklch(0.96 0.03 22);
+  --background: oklch(0.985 0.002 247);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
