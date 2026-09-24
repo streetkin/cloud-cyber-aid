@@ -193,41 +193,41 @@ export const validateAnagrafica = (state: VoucherState): FieldErrors => {
   const a = state.azienda;
   const r = state.rappresentante;
   if (a.ragioneSociale.trim().length < 2)
-    e.ragioneSociale = "Indicare la ragione sociale o il nome e cognome del professionista.";
-  if (!a.tipologia) e.tipologia = "Selezionare la tipologia di soggetto richiedente.";
+    e["ragioneSociale"] = "Indicare la ragione sociale o il nome e cognome del professionista.";
+  if (!a.tipologia) e["tipologia"] = "Selezionare la tipologia di soggetto richiedente.";
   if (!(/^\d{11}$/.test(a.codiceFiscale.trim()) || CF_PERSONA.test(a.codiceFiscale.trim())))
-    e.codiceFiscaleAz = "Il codice fiscale deve essere di 16 caratteri alfanumerici o 11 cifre.";
+    e["codiceFiscaleAz"] = "Il codice fiscale deve essere di 16 caratteri alfanumerici o 11 cifre.";
   if (!/^\d{11}$/.test(a.partitaIva.trim()))
-    e.partitaIva = "La partita IVA deve essere composta esattamente da 11 cifre numeriche.";
+    e["partitaIva"] = "La partita IVA deve essere composta esattamente da 11 cifre numeriche.";
   if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(a.pec.trim()))
-    e.pec = "Inserire un indirizzo PEC formalmente valido (es. impresa@pec.it).";
+    e["pec"] = "Inserire un indirizzo PEC formalmente valido (es. impresa@pec.it).";
   if (!/^\d{2}\.\d{2}(\.\d{2})?$/.test(a.ateco.trim()))
-    e.ateco = "Formato ATECO 2007 non valido. Esempio corretto: 62.01.00";
-  if (a.via.trim().length < 2) e.via = "Indicare la via della sede legale.";
-  if (!a.civico.trim()) e.civico = "Indicare il numero civico.";
-  if (!/^\d{5}$/.test(a.cap.trim())) e.cap = "Il CAP deve essere composto da 5 cifre.";
-  if (a.comune.trim().length < 2) e.comune = "Indicare il comune della sede legale.";
+    e["ateco"] = "Formato ATECO 2007 non valido. Esempio corretto: 62.01.00";
+  if (a.via.trim().length < 2) e["via"] = "Indicare la via della sede legale.";
+  if (!a.civico.trim()) e["civico"] = "Indicare il numero civico.";
+  if (!/^\d{5}$/.test(a.cap.trim())) e["cap"] = "Il CAP deve essere composto da 5 cifre.";
+  if (a.comune.trim().length < 2) e["comune"] = "Indicare il comune della sede legale.";
   if (!/^[A-Za-z]{2}$/.test(a.provincia.trim()))
-    e.provincia = "Indicare la provincia con 2 lettere (es. MI).";
+    e["provincia"] = "Indicare la provincia con 2 lettere (es. MI).";
   if (r.nomeCognome.trim().length < 3)
-    e.nomeCognome = "Indicare nome e cognome del legale rappresentante.";
+    e["nomeCognome"] = "Indicare nome e cognome del legale rappresentante.";
   if (!CF_PERSONA.test(r.codiceFiscale.trim()))
-    e.cfRappresentante = "Codice fiscale personale non valido: 16 caratteri alfanumerici.";
+    e["cfRappresentante"] = "Codice fiscale personale non valido: 16 caratteri alfanumerici.";
   if (!/^(\+39)?\s?3\d{8,9}$/.test(r.telefono.replace(/[\s.-]/g, "")))
-    e.telefono = "Inserire un numero di cellulare italiano valido (es. 3331234567).";
+    e["telefono"] = "Inserire un numero di cellulare italiano valido (es. 3331234567).";
   if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(r.email.trim()))
-    e.email = "Inserire un indirizzo email ordinario valido.";
+    e["email"] = "Inserire un indirizzo email ordinario valido.";
   return e;
 };
 
 export const validateFornitore = (state: VoucherState): FieldErrors => {
   const e: FieldErrors = {};
   if (state.fornitore.ragioneSociale.trim().length < 2)
-    e.fornitoreNome = "Indicare il nome o la ragione sociale del fornitore abilitato.";
+    e["fornitoreNome"] = "Indicare il nome o la ragione sociale del fornitore abilitato.";
   if (!/^\d{11}$/.test(state.fornitore.partitaIva.trim()))
-    e.fornitorePiva = "La partita IVA del fornitore deve essere di 11 cifre numeriche.";
+    e["fornitorePiva"] = "La partita IVA del fornitore deve essere di 11 cifre numeriche.";
   if (state.fornitore.interventi.length === 0)
-    e.interventi = "Selezionare almeno una tipologia di intervento ammissibile.";
+    e["interventi"] = "Selezionare almeno una tipologia di intervento ammissibile.";
   return e;
 };
 
