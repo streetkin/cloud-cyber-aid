@@ -49,6 +49,7 @@ export const Route = createFileRoute("/api/chat")({
             originalMessages: messages,
             sendReasoning: true,
             onError: (error) => {
+              console.error("[chat]", error);
               const status = (error as { statusCode?: number })?.statusCode;
               if (status === 402) return "Crediti AI esauriti: ricarica i crediti del workspace.";
               if (status === 429) return "Troppe richieste: riprova tra qualche secondo.";
