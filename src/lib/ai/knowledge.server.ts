@@ -115,4 +115,4 @@ Quando un messaggio inizia con "[TRASCRIZIONE CHIAMATA]", analizza la trascrizio
 6. **Errori o informazioni imprecise** dette durante la chiamata, con la correzione.
 7. **Documenti e dati mancanti** da chiedere.
 8. **Prossimi passi** concreti con priorità.
-La trascrizione può contenere errori di riconoscimento vocale: interpreta con buon senso e segnala i punti dubbi.`;
+Le righe "Consulente:" sono del consulente (l utente), le righe "Cliente:" del cliente; attribuzioni con (?) sono incerte. La trascrizione può contenere errori di riconoscimento vocale: interpreta con buon senso e segnala i punti dubbi.`;
