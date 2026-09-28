@@ -120,7 +120,19 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
                         <summary className="flex cursor-pointer items-center gap-2 font-semibold">
                           <PhoneCall className="size-4" /> Trascrizione chiamata (clicca per leggere)
                         </summary>
-                        <p className="mt-2 whitespace-pre-wrap opacity-90">{body}</p>
+                        <div className="mt-2 space-y-1.5">
+                          {body.split("\n").filter(Boolean).map((line, j) => {
+                            const m = /^(Consulente|Cliente)( \(\?\))?:\s*(.*)$/.exec(line);
+                            if (!m) return <p key={j} className="opacity-90">{line}</p>;
+                            const isClient = m[1] === "Cliente";
+                            return (
+                              <p key={j} className={isClient ? "rounded bg-primary-foreground/15 px-2 py-1" : "px-2"}>
+                                <span className="font-semibold">{isClient ? "Cliente" : "Tu"}{m[2] ?? ""}: </span>
+                                {m[3]}
+                              </p>
+                            );
+                          })}
+                        </div>
                       </details>
                     );
                   }

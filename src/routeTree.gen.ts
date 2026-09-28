@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiDiarizeRouteImport } from './routes/api/diarize'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ClienteThreadIdRouteImport } from './routes/cliente.$threadId'
 
@@ -19,9 +21,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDiarizeRoute = ApiDiarizeRouteImport.update({
+  id: '/api/diarize',
+  path: '/api/diarize',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
@@ -37,34 +49,61 @@ const ClienteThreadIdRoute = ClienteThreadIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/faq': typeof FaqRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/diarize': typeof ApiDiarizeRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/cliente/$threadId': typeof ClienteThreadIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/faq': typeof FaqRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/diarize': typeof ApiDiarizeRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/cliente/$threadId': typeof ClienteThreadIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/faq': typeof FaqRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/diarize': typeof ApiDiarizeRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/cliente/$threadId': typeof ClienteThreadIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/chat' | '/api/transcribe' | '/cliente/$threadId'
+  fullPaths:
+    | '/'
+    | '/faq'
+    | '/api/chat'
+    | '/api/diarize'
+    | '/api/transcribe'
+    | '/cliente/$threadId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/chat' | '/api/transcribe' | '/cliente/$threadId'
-  id: '__root__' | '/' | '/api/chat' | '/api/transcribe' | '/cliente/$threadId'
+  to:
+    | '/'
+    | '/faq'
+    | '/api/chat'
+    | '/api/diarize'
+    | '/api/transcribe'
+    | '/cliente/$threadId'
+  id:
+    | '__root__'
+    | '/'
+    | '/faq'
+    | '/api/chat'
+    | '/api/diarize'
+    | '/api/transcribe'
+    | '/cliente/$threadId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FaqRoute: typeof FaqRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiDiarizeRoute: typeof ApiDiarizeRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
   ClienteThreadIdRoute: typeof ClienteThreadIdRoute
 }
@@ -78,11 +117,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/diarize': {
+      id: '/api/diarize'
+      path: '/api/diarize'
+      fullPath: '/api/diarize'
+      preLoaderRoute: typeof ApiDiarizeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/transcribe': {
@@ -104,7 +157,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FaqRoute: FaqRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiDiarizeRoute: ApiDiarizeRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
   ClienteThreadIdRoute: ClienteThreadIdRoute,
 }

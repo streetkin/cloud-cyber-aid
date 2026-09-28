@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, Plus, Trash2 } from "lucide-react";
+import { BookOpen, Menu, MessageSquare, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createThread, deleteThread, loadThreads, type Thread } from "@/lib/aimimit/threads";
@@ -52,7 +52,15 @@ export function AppShell({ activeId, children }: { activeId?: string; children: 
           <p className="text-lg font-semibold leading-tight">AI MIMIT</p>
         </div>
       </div>
-      <div className="px-3">
+      <div className="space-y-2 px-3">
+        <Link
+          to="/faq"
+          onClick={() => setOpen(false)}
+          className="flex h-11 items-center gap-2 rounded-md bg-success px-3 text-sm font-semibold text-success-foreground"
+          activeProps={{ className: "ring-2 ring-brand-foreground/60" }}
+        >
+          <BookOpen className="size-4" /> FAQ rapide per il telefono
+        </Link>
         <Button type="button" onClick={newClient} className="w-full">
           <Plus className="size-4" /> Nuovo cliente
         </Button>
@@ -112,7 +120,17 @@ export function AppShell({ activeId, children }: { activeId?: string; children: 
           <Button type="button" variant="ghost" size="icon" onClick={() => setOpen(true)} aria-label="Apri menu">
             <Menu className="size-5" />
           </Button>
-          <span className="font-semibold">AI MIMIT</span>
+          <span className="flex-1 font-semibold">AI MIMIT</span>
+          <Link
+            to="/"
+            className="flex h-9 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium"
+            activeOptions={{ exact: true }}
+          >
+            <MessageSquare className="size-4" /> Chat
+          </Link>
+          <Link to="/faq" className="flex h-9 items-center gap-1.5 rounded-md bg-success px-3 text-sm font-semibold text-success-foreground">
+            <BookOpen className="size-4" /> FAQ
+          </Link>
         </header>
         <main className="min-h-0 flex-1">{children}</main>
       </div>
