@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiDiarizeRouteImport } from './routes/api/diarize'
+import { Route as ApiReportRouteImport } from './routes/api/report'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as ClienteThreadIdRouteImport } from './routes/cliente.$threadId'
 
@@ -36,6 +37,11 @@ const ApiDiarizeRoute = ApiDiarizeRouteImport.update({
   path: '/api/diarize',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiReportRoute = ApiReportRouteImport.update({
+  id: '/api/report',
+  path: '/api/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
   id: '/api/transcribe',
   path: '/api/transcribe',
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/api/chat': typeof ApiChatRoute
   '/api/diarize': typeof ApiDiarizeRoute
+  '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/cliente/$threadId': typeof ClienteThreadIdRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/api/chat': typeof ApiChatRoute
   '/api/diarize': typeof ApiDiarizeRoute
+  '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/cliente/$threadId': typeof ClienteThreadIdRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/api/chat': typeof ApiChatRoute
   '/api/diarize': typeof ApiDiarizeRoute
+  '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/cliente/$threadId': typeof ClienteThreadIdRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/api/chat'
     | '/api/diarize'
+    | '/api/report'
     | '/api/transcribe'
     | '/cliente/$threadId'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/api/chat'
     | '/api/diarize'
+    | '/api/report'
     | '/api/transcribe'
     | '/cliente/$threadId'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/api/chat'
     | '/api/diarize'
+    | '/api/report'
     | '/api/transcribe'
     | '/cliente/$threadId'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiDiarizeRoute: typeof ApiDiarizeRoute
+  ApiReportRoute: typeof ApiReportRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
   ClienteThreadIdRoute: typeof ClienteThreadIdRoute
 }
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDiarizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/report': {
+      id: '/api/report'
+      path: '/api/report'
+      fullPath: '/api/report'
+      preLoaderRoute: typeof ApiReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/transcribe': {
       id: '/api/transcribe'
       path: '/api/transcribe'
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   ApiChatRoute: ApiChatRoute,
   ApiDiarizeRoute: ApiDiarizeRoute,
+  ApiReportRoute: ApiReportRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
   ClienteThreadIdRoute: ClienteThreadIdRoute,
 }
