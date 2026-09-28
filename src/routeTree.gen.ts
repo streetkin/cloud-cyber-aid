@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiDiarizeRouteImport } from './routes/api/diarize'
 import { Route as ApiReportRouteImport } from './routes/api/report'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
@@ -25,11 +24,6 @@ const IndexRoute = IndexRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDiarizeRoute = ApiDiarizeRouteImport.update({
@@ -56,7 +50,6 @@ const ClienteThreadIdRoute = ClienteThreadIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
-  '/api/chat': typeof ApiChatRoute
   '/api/diarize': typeof ApiDiarizeRoute
   '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -65,7 +58,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
-  '/api/chat': typeof ApiChatRoute
   '/api/diarize': typeof ApiDiarizeRoute
   '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -75,7 +67,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
-  '/api/chat': typeof ApiChatRoute
   '/api/diarize': typeof ApiDiarizeRoute
   '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -86,7 +77,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/faq'
-    | '/api/chat'
     | '/api/diarize'
     | '/api/report'
     | '/api/transcribe'
@@ -95,7 +85,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/faq'
-    | '/api/chat'
     | '/api/diarize'
     | '/api/report'
     | '/api/transcribe'
@@ -104,7 +93,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/faq'
-    | '/api/chat'
     | '/api/diarize'
     | '/api/report'
     | '/api/transcribe'
@@ -114,7 +102,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FaqRoute: typeof FaqRoute
-  ApiChatRoute: typeof ApiChatRoute
   ApiDiarizeRoute: typeof ApiDiarizeRoute
   ApiReportRoute: typeof ApiReportRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
@@ -135,13 +122,6 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/diarize': {
@@ -178,7 +158,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FaqRoute: FaqRoute,
-  ApiChatRoute: ApiChatRoute,
   ApiDiarizeRoute: ApiDiarizeRoute,
   ApiReportRoute: ApiReportRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
