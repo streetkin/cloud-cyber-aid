@@ -7,14 +7,53 @@ export const Route = createFileRoute("/api/transcribe")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = process.env["LOVABLE_API_KEY"];
-        if (!apiKey) return Response.json({ error: "Configurazione AI mancante" }, { status: 500 });
         const form = await request.formData().catch(() => null);
         const file = form?.get("file");
         if (!(file instanceof File) || !file.size) {
           return Response.json({ error: "Registrazione vuota" }, { status: 400 });
         }
         if (file.size > MAX_BYTES) return Response.json({ error: "Audio troppo grande" }, { status: 400 });
+
+        // Percorso preferito: chiave OpenRouter dell'utente (billing diretto, indipendente dai crediti Lovable)
+        const openRouterKey = process.env["OPENROUTER_API_KEY"];
+        if (openRouterKey) {
+          const buffer = Buffer.from(await file.arrayBuffer());
+          const ext = (file.name.split(".").pop() ?? "wav").toLowerCase();
+          const orRes = await fetch("https://openrouter.ai/api/v1/audio/transcriptions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${openRouterKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-3.5-transcribe",
+              language: "it",
+              input_audio: { data: buffer.toString("base64"), format: ext },
+            }),
+            signal: request.signal,
+          });
+          if (!orRes.ok) {
+            const detail = await orRes.text().catch(() => "");
+            console.error(`OpenRouter transcription failed [${orRes.status}]: ${detail}`);
+            const message =
+              orRes.status === 401
+                ? "Chiave OpenRouter non valida: controlla la chiave salvata."
+                : orRes.status === 402
+                  ? "Credito OpenRouter esaurito: ricarica il tuo account OpenRouter."
+                  : orRes.status === 429
+                    ? "Troppe richieste: riprova tra poco."
+                    : "Trascrizione non riuscita, riprova tra poco.";
+            return Response.json({ error: message }, { status: orRes.status || 500 });
+          }
+          const orData = (await orRes.json().catch(() => null)) as { text?: string } | null;
+          const text = orData?.text?.trim();
+          if (!text) return Response.json({ error: "Trascrizione vuota" }, { status: 502 });
+          return Response.json({ text });
+        }
+
+        // Fallback: gateway Lovable (crediti workspace)
+        const apiKey = process.env["LOVABLE_API_KEY"];
+        if (!apiKey) return Response.json({ error: "Configurazione AI mancante" }, { status: 500 });
 
         const upstreamForm = new FormData();
         upstreamForm.append("model", "google/gemini-3.5-transcribe");
