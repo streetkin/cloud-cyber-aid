@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { toast } from "sonner";
@@ -34,13 +34,14 @@ type Props = { threadId: string; initialMessages: UIMessage[]; title: string };
 export function ChatWindow({ threadId, initialMessages, title }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat", body: { threadId } }), [threadId]);
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, setMessages, status, stop } = useChat({
     id: threadId,
     messages: initialMessages,
     transport,
     onError: (error) => toast.error(error.message || "Errore di comunicazione con AI MIMIT."),
   });
-  const busy = status === "submitted" || status === "streaming";
+  const [reporting, setReporting] = useState(false);
+  const busy = status === "submitted" || status === "streaming" || reporting;
 
   useEffect(() => {
     if (status === "streaming" || status === "submitted") return;
@@ -66,11 +67,30 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
     void sendMessage({ text });
   };
 
-  const onTranscript = (text: string, seconds: number) => {
+  const onTranscript = async (text: string, seconds: number) => {
     const min = Math.max(1, Math.round(seconds / 60));
-    send(
-      `${TRANSCRIPT_PREFIX} Durata circa ${min} min, registrata il ${new Date().toLocaleString("it-IT")}.\n\n${text}`,
-    );
+    const full = `${TRANSCRIPT_PREFIX} Durata circa ${min} min, registrata il ${new Date().toLocaleString("it-IT")}.\n\n${text}`;
+    const userMsg: UIMessage = { id: crypto.randomUUID(), role: "user", parts: [{ type: "text", text: full }] };
+    const base = [...messages, userMsg];
+    setMessages(base);
+    setReporting(true);
+    try {
+      const res = await fetch("/api/report", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ text: full }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { text?: string; error?: string };
+      if (!res.ok || !data.text) throw new Error(data.error ?? "Report non riuscito.");
+      setMessages([
+        ...base,
+        { id: crypto.randomUUID(), role: "assistant", parts: [{ type: "text", text: data.text }] },
+      ]);
+    } catch (e) {
+      toast.error(`${e instanceof Error ? e.message : "Report non riuscito."} La trascrizione è comunque salvata.`);
+    } finally {
+      setReporting(false);
+    }
   };
 
   return (
