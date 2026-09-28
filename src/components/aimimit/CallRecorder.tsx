@@ -54,8 +54,21 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
         if (!res.ok) throw new Error(data.error ?? "Trascrizione non riuscita.");
         if (data.text) parts.push(data.text);
       }
-      const text = parts.join("\n").trim();
+      let text = parts.join("\n").trim();
       if (!text) throw new Error("Non ho sentito parlare nessuno: controlla il vivavoce e riprova.");
+      setProgress("· separo le voci consulente / cliente");
+      try {
+        const res = await fetch("/api/diarize", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { text?: string };
+        if (res.ok && data.text) text = data.text;
+        else toast.warning("Non sono riuscito a separare le voci: ti mostro il testo unico.");
+      } catch {
+        toast.warning("Non sono riuscito a separare le voci: ti mostro il testo unico.");
+      }
       onTranscript(text, duration);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Trascrizione non riuscita.");
