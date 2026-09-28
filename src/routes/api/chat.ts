@@ -51,6 +51,7 @@ export const Route = createFileRoute("/api/chat")({
             onError: (error) => {
               console.error("[chat]", error);
               const status = (error as { statusCode?: number })?.statusCode;
+              if (status === 403) return "Limite di spesa AI del workspace raggiunto: un amministratore deve aumentarlo nelle impostazioni del workspace.";
               if (status === 402) return "Crediti AI esauriti: ricarica i crediti del workspace.";
               if (status === 429) return "Troppe richieste: riprova tra qualche secondo.";
               return "Si è verificato un errore durante la risposta. Riprova.";

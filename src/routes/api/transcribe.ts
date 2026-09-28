@@ -31,7 +31,9 @@ export const Route = createFileRoute("/api/transcribe")({
         });
         if (!upstream.ok || !upstream.body) {
           const message =
-            upstream.status === 402
+            upstream.status === 403
+              ? "Limite di spesa AI del workspace raggiunto: un amministratore deve aumentarlo."
+              : upstream.status === 402
               ? "Crediti AI esauriti: ricarica i crediti del workspace."
               : upstream.status === 429
                 ? "Troppe richieste: riprova tra poco."
