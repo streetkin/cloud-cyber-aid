@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport, type UIMessage } from "ai";
+import { useEffect, useState } from "react";
+import type { UIMessage } from "ai";
 import { toast } from "sonner";
 import { PhoneCall } from "lucide-react";
 import {
@@ -9,37 +8,18 @@ import {
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
-import {
-  PromptInput,
-  PromptInputFooter,
-  PromptInputSubmit,
-  PromptInputTextarea,
-} from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { CallRecorder } from "./CallRecorder";
 import { updateThread } from "@/lib/aimimit/threads";
 import logo from "@/assets/ai-mimit-logo.png";
-
-const SUGGESTIONS = [
-  "Il mio cliente può partecipare? Fammi le domande di verifica una alla volta.",
-  "Spiegami passo per passo come si compila la domanda su Invitalia.",
-  "Aiutami a scrivere il progetto tecnico per un CRM cloud in un'azienda di 8 persone.",
-  "Quali documenti deve preparare il cliente prima del 10 novembre?",
-];
 
 const TRANSCRIPT_PREFIX = "[TRASCRIZIONE CHIAMATA]";
 
 type Props = { threadId: string; initialMessages: UIMessage[]; title: string };
 
 export function ChatWindow({ threadId, initialMessages, title }: Props) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat", body: { threadId } }), [threadId]);
-  const { messages, sendMessage, setMessages, status, stop } = useChat({
-    id: threadId,
-    messages: initialMessages,
-    transport,
-    onError: (error) => toast.error(error.message || "Errore di comunicazione con AI MIMIT."),
-  });
+  const [messages, setMessages] = useState<UIMessage[]>(initialMessages);
+  const status = "ready" as string;
   const [reporting, setReporting] = useState(false);
   const busy = status === "submitted" || status === "streaming" || reporting;
 
@@ -58,14 +38,6 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
     updateThread(threadId, patch);
   }, [messages, status, threadId, title, initialMessages.length]);
 
-  useEffect(() => {
-    if (!busy) textareaRef.current?.focus();
-  }, [busy, threadId]);
-
-  const send = (text: string) => {
-    if (!text.trim() || busy) return;
-    void sendMessage({ text });
-  };
 
   const onTranscript = async (text: string, seconds: number) => {
     const min = Math.max(1, Math.round(seconds / 60));
@@ -103,21 +75,8 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
               <div>
                 <h2 className="text-xl font-semibold text-foreground">Ciao, sono AI MIMIT</h2>
                 <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-                  Conosco il bando Voucher Cloud e Cybersecurity. Registra la chiamata con il cliente o
-                  chiedimi come compilare la domanda e scrivere il progetto tecnico.
+                  Registra la chiamata con il cliente in vivavoce: alla fine ti preparo trascrizione divisa per voce e report completo sul bando.
                 </p>
-              </div>
-              <div className="grid w-full gap-2 sm:grid-cols-2">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => send(s)}
-                    className="cursor-pointer rounded-lg border border-border bg-card p-3 text-left text-sm text-foreground/80 transition-colors hover:border-primary/50 hover:text-primary"
-                  >
-                    {s}
-                  </button>
-                ))}
               </div>
             </div>
           ) : null}
@@ -167,7 +126,7 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
           ))}
 
           {busy && messages.at(-1)?.role === "user" ? (
-            <Shimmer className="text-sm">AI MIMIT sta analizzando…</Shimmer>
+            <Shimmer className="text-sm">Sto preparando il report della chiamata…</Shimmer>
           ) : null}
         </ConversationContent>
         <ConversationScrollButton />
@@ -176,15 +135,6 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
       <div className="border-t border-border bg-background">
         <div className="mx-auto w-full max-w-3xl space-y-2 px-4 py-3">
           <CallRecorder disabled={busy} onTranscript={onTranscript} />
-          <PromptInput onSubmit={(m) => send(m.text)}>
-            <PromptInputTextarea
-              ref={textareaRef}
-              placeholder="Scrivi una domanda su bando, domanda o progetto tecnico…"
-            />
-            <PromptInputFooter className="justify-end">
-              <PromptInputSubmit status={status} onStop={stop} />
-            </PromptInputFooter>
-          </PromptInput>
         </div>
       </div>
     </div>
