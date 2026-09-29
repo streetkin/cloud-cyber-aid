@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Component, type ReactNode, useEffect, useRef, useState } from "react";
 import { Loader2, Mic } from "lucide-react";
 import { LiveCopilot } from "./LiveCopilot";
 import { toast } from "sonner";
@@ -87,7 +87,20 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
   };
 
   if (phase === "recording") {
-    return <LiveCopilot seconds={fmt(seconds)} level={level} onCancel={cancel} onStop={stop} />;
+    const bar = (
+      <div className="flex items-center gap-3 rounded-lg border border-danger/40 bg-danger-soft px-3 py-2">
+        <p className="flex-1 text-sm font-semibold text-danger">Registrazione in corso · {fmt(seconds)}</p>
+        <Button type="button" size="sm" variant="ghost" onClick={cancel}>Annulla</Button>
+        <Button type="button" size="sm" onClick={stop} className="bg-danger text-danger-foreground hover:bg-danger/90">
+          Termina e analizza
+        </Button>
+      </div>
+    );
+    return (
+      <SafeBoundary fallback={bar}>
+        <LiveCopilot seconds={fmt(seconds)} level={level} onCancel={cancel} onStop={stop} />
+      </SafeBoundary>
+    );
   }
 
   if (phase === "transcribing") {
@@ -105,4 +118,17 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
       Registra chiamata (vivavoce)
     </Button>
   );
+}
+
+class SafeBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  override state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  override componentDidCatch(error: unknown) {
+    console.error("Copilota live non disponibile", error);
+  }
+  override render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
 }

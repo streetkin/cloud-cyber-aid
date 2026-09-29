@@ -21,11 +21,17 @@ export function startLiveSpeech(onFinal: (text: string) => void, onInterim: (tex
   const Ctor = w["SpeechRecognition"] || w["webkitSpeechRecognition"];
   if (!Ctor) return () => undefined;
   let active = true;
-  const rec = new Ctor();
+  let rec: SR;
+  try {
+    rec = new Ctor();
+  } catch {
+    return () => undefined;
+  }
   rec.lang = "it-IT";
   rec.continuous = true;
   rec.interimResults = true;
   rec.onresult = (e) => {
+    try {
     let interim = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const r = e.results[i]!;
@@ -35,6 +41,9 @@ export function startLiveSpeech(onFinal: (text: string) => void, onInterim: (tex
       else interim += `${t} `;
     }
     onInterim(interim.trim());
+    } catch (err) {
+      console.warn("live speech", err);
+    }
   };
   rec.onerror = (e) => {
     if (e.error === "not-allowed" || e.error === "service-not-allowed") active = false;
