@@ -8,7 +8,7 @@ Rispondi SOLO con JSON valido, senza testo attorno, in italiano, con questa form
 Regole:
 - "ask": massimo 2 domande, le più utili adesso, formulate come le direbbe Raffaele. Non chiedere cose già dette. Salta domande non pertinenti al profilo (es. se è SRL non chiedere se è libero professionista).
 - "propose": massimo 2, solo spese ammissibili dal bando (cloud, cybersecurity, backup, software/SaaS, consulenza collegata), mai hardware generico. Vuoto se non c'è un aggancio naturale.
-- "checklist": 6-10 punti essenziali per la domanda e il report: forma giuridica, settore/ATECO, sede operativa in Italia, PEC, firma digitale, SPID/CIE, DURC regolare, aiuti de minimis ultimi 3 anni, esigenze e soluzioni desiderate, budget indicativo (almeno 4.000 € netto IVA), tempistiche. Aggiorna gli stati in base a quanto sentito; "na" se non si applica.
+- "checklist": 6-10 punti essenziali per la domanda e il report: forma giuridica, settore/ATECO, sede operativa in Italia, PEC, firma digitale, SPID/CIE, DURC regolare, aiuti de minimis ultimi 3 anni, esigenze e soluzioni desiderate, budget indicativo (almeno 4.000 € netto IVA), tempistiche. Aggiorna gli stati in base a quanto sentito; "na" SOLO se il profilo lo rende chiaramente non pertinente (DURC, PEC, firma, SPID, de minimis non sono mai "na": se non emersi sono "todo"). Deduci il settore da quanto detto (es. studio di commercialisti).
 - Frasi brevissime: Raffaele le legge al volo mentre parla.`;
 
 export const Route = createFileRoute("/api/coach")({
