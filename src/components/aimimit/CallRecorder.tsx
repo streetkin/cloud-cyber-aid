@@ -121,14 +121,14 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
 }
 
 class SafeBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
+  override state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
-  componentDidCatch(error: unknown) {
+  override componentDidCatch(error: unknown) {
     console.error("Copilota live non disponibile", error);
   }
-  render() {
+  override render() {
     return this.state.failed ? this.props.fallback : this.props.children;
   }
 }
