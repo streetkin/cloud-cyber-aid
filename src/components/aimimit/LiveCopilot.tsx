@@ -109,7 +109,9 @@ export function LiveCopilot({ seconds, level, onCancel, onStop, onChecklist }: P
     );
   }, [supported]);
 
-  useEffect(() => feedEnd.current?.scrollIntoView({ block: "end" }), [lines, interim]);
+  useEffect(() => {
+    feedEnd.current?.scrollIntoView({ block: "end" });
+  }, [lines, interim]);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
