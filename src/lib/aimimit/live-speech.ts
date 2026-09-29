@@ -13,12 +13,12 @@ type SR = {
 export function liveSpeechSupported() {
   if (typeof window === "undefined") return false;
   const w = window as unknown as Record<string, unknown>;
-  return Boolean(w.SpeechRecognition || w.webkitSpeechRecognition);
+  return Boolean(w["SpeechRecognition"] || w["webkitSpeechRecognition"]);
 }
 
 export function startLiveSpeech(onFinal: (text: string) => void, onInterim: (text: string) => void) {
   const w = window as unknown as Record<string, new () => SR>;
-  const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition;
+  const Ctor = w["SpeechRecognition"] || w["webkitSpeechRecognition"];
   if (!Ctor) return () => undefined;
   let active = true;
   const rec = new Ctor();
