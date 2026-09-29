@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Mic, Square, X } from "lucide-react";
+import { Loader2, Mic } from "lucide-react";
+import { LiveCopilot } from "./LiveCopilot";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { startRecording, type Recording } from "@/lib/aimimit/recorder";
@@ -86,27 +87,7 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
   };
 
   if (phase === "recording") {
-    return (
-      <div className="flex items-center gap-3 rounded-lg border border-danger/40 bg-danger-soft px-3 py-2">
-        <span className="relative flex size-3">
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-danger opacity-60" />
-          <span className="relative inline-flex size-3 rounded-full bg-danger" />
-        </span>
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-danger">Registrazione in corso · {fmt(seconds)}</p>
-          <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-danger/15">
-            <div className="h-full bg-danger transition-all" style={{ width: `${Math.min(level * 140, 100)}%` }} />
-          </div>
-        </div>
-        <Button type="button" size="sm" variant="ghost" onClick={cancel} aria-label="Annulla registrazione">
-          <X className="size-4" />
-        </Button>
-        <Button type="button" size="sm" onClick={stop} className="bg-danger text-danger-foreground hover:bg-danger/90">
-          <Square className="size-3.5 fill-current" />
-          Termina e analizza
-        </Button>
-      </div>
-    );
+    return <LiveCopilot seconds={fmt(seconds)} level={level} onCancel={cancel} onStop={stop} />;
   }
 
   if (phase === "transcribing") {
