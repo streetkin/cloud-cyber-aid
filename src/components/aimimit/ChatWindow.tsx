@@ -39,7 +39,7 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
   }, [messages, status, threadId, title, initialMessages.length]);
 
 
-  const onTranscript = async (text: string, seconds: number) => {
+  const onTranscript = async (text: string, seconds: number, notes?: string) => {
     const min = Math.max(1, Math.round(seconds / 60));
     const full = `${TRANSCRIPT_PREFIX} Durata circa ${min} min, registrata il ${new Date().toLocaleString("it-IT")}.\n\n${text}`;
     const userMsg: UIMessage = { id: crypto.randomUUID(), role: "user", parts: [{ type: "text", text: full }] };
@@ -50,7 +50,11 @@ export function ChatWindow({ threadId, initialMessages, title }: Props) {
       const res = await fetch("/api/report", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: full }),
+        body: JSON.stringify({
+          text: notes
+            ? `${full}\n\n[CHECKLIST RACCOLTA DAL COPILOTA DURANTE LA CHIAMATA — usala: non suggerire di richiedere punti CONFERMATI o NON APPLICABILI, concentra "cosa chiedere" solo sui DA CHIARIRE]\n${notes}`
+            : full,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as { text?: string; error?: string };
       if (!res.ok || !data.text) throw new Error(data.error ?? "Report non riuscito.");

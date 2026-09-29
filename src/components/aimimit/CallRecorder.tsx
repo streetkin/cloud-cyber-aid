@@ -1,11 +1,11 @@
-import { Component, type ReactNode, useEffect, useRef, useState } from "react";
+import { Component, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, Mic } from "lucide-react";
-import { LiveCopilot } from "./LiveCopilot";
+import { LiveCopilot, type CheckItem } from "./LiveCopilot";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { startRecording, type Recording } from "@/lib/aimimit/recorder";
 
-type Props = { disabled?: boolean; onTranscript: (text: string, seconds: number) => void };
+type Props = { disabled?: boolean; onTranscript: (text: string, seconds: number, notes?: string) => void };
 
 const fmt = (s: number) => `${Math.floor(s / 60).toString().padStart(2, "0")}:${(s % 60).toString().padStart(2, "0")}`;
 
@@ -15,6 +15,10 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
   const [level, setLevel] = useState(0);
   const [progress, setProgress] = useState("");
   const rec = useRef<Recording | null>(null);
+  const checklist = useRef<CheckItem[]>([]);
+  const saveChecklist = useCallback((items: CheckItem[]) => {
+    checklist.current = items;
+  }, []);
 
   useEffect(() => {
     if (phase !== "recording") return;
@@ -30,6 +34,7 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
 
   const start = async () => {
     try {
+      checklist.current = [];
       rec.current = await startRecording();
       setSeconds(0);
       setPhase("recording");
@@ -70,7 +75,11 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
       } catch {
         toast.warning("Non sono riuscito a separare le voci: ti mostro il testo unico.");
       }
-      onTranscript(text, duration);
+      const notes = checklist.current.length
+        ? checklist.current.map((c) => `- [${c.status === "ok" ? "CONFERMATO" : c.status === "na" ? "NON APPLICABILE" : "DA CHIARIRE"}] ${c.item}${c.note ? `: ${c.note}` : ""}`).join("\n")
+        : undefined;
+      checklist.current = [];
+      onTranscript(text, duration, notes);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Trascrizione non riuscita.");
     } finally {
@@ -98,7 +107,7 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
     );
     return (
       <SafeBoundary fallback={bar}>
-        <LiveCopilot seconds={fmt(seconds)} level={level} onCancel={cancel} onStop={stop} />
+        <LiveCopilot seconds={fmt(seconds)} level={level} onCancel={cancel} onStop={stop} onChecklist={saveChecklist} />
       </SafeBoundary>
     );
   }

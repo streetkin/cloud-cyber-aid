@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as ApiCoachRouteImport } from './routes/api/coach'
 import { Route as ApiDiarizeRouteImport } from './routes/api/diarize'
 import { Route as ApiReportRouteImport } from './routes/api/report'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoachRoute = ApiCoachRouteImport.update({
+  id: '/api/coach',
+  path: '/api/coach',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDiarizeRoute = ApiDiarizeRouteImport.update({
@@ -50,6 +56,7 @@ const ClienteThreadIdRoute = ClienteThreadIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
+  '/api/coach': typeof ApiCoachRoute
   '/api/diarize': typeof ApiDiarizeRoute
   '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
+  '/api/coach': typeof ApiCoachRoute
   '/api/diarize': typeof ApiDiarizeRoute
   '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
+  '/api/coach': typeof ApiCoachRoute
   '/api/diarize': typeof ApiDiarizeRoute
   '/api/report': typeof ApiReportRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/faq'
+    | '/api/coach'
     | '/api/diarize'
     | '/api/report'
     | '/api/transcribe'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/faq'
+    | '/api/coach'
     | '/api/diarize'
     | '/api/report'
     | '/api/transcribe'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/faq'
+    | '/api/coach'
     | '/api/diarize'
     | '/api/report'
     | '/api/transcribe'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FaqRoute: typeof FaqRoute
+  ApiCoachRoute: typeof ApiCoachRoute
   ApiDiarizeRoute: typeof ApiDiarizeRoute
   ApiReportRoute: typeof ApiReportRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/coach': {
+      id: '/api/coach'
+      path: '/api/coach'
+      fullPath: '/api/coach'
+      preLoaderRoute: typeof ApiCoachRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/diarize': {
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FaqRoute: FaqRoute,
+  ApiCoachRoute: ApiCoachRoute,
   ApiDiarizeRoute: ApiDiarizeRoute,
   ApiReportRoute: ApiReportRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,

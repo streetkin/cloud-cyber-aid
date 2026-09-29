@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Copy, Square, X } from "lucide-react";
+import { Check, CircleDashed, CircleCheck, Copy, Lightbulb, Loader2, MessageCircleQuestion, MinusCircle, Square, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LIVE_RULES, TONE_CLASS, type LiveRule } from "@/lib/aimimit/live-rules";
 import { liveSpeechSupported, startLiveSpeech } from "@/lib/aimimit/live-speech";
 import { cn } from "@/lib/utils";
 
-type Props = { seconds: string; level: number; onCancel: () => void; onStop: () => void };
+export type CheckItem = { item: string; status: "ok" | "todo" | "na"; note?: string };
+type Coach = { ask: string[]; propose: string[]; checklist: CheckItem[] };
+type Props = {
+  seconds: string;
+  level: number;
+  onCancel: () => void;
+  onStop: () => void;
+  onChecklist?: (items: CheckItem[]) => void;
+};
 type Tip = { rule: LiveRule; at: string; quote: string };
 
 function TipCard({ tip }: { tip: Tip }) {
@@ -34,7 +42,49 @@ function TipCard({ tip }: { tip: Tip }) {
   );
 }
 
-export function LiveCopilot({ seconds, level, onCancel, onStop }: Props) {
+export function LiveCopilot({ seconds, level, onCancel, onStop, onChecklist }: Props) {
+  const [coach, setCoach] = useState<Coach>({ ask: [], propose: [], checklist: [] });
+  const [thinking, setThinking] = useState(false);
+  const linesRef = useRef<string[]>([]);
+  const sentLen = useRef(0);
+  const coachRef = useRef(coach);
+  coachRef.current = coach;
+
+  useEffect(() => {
+    let busy = false;
+    const tick = async () => {
+      const text = linesRef.current.join("\n");
+      if (busy || text.length - sentLen.current < 40) return;
+      busy = true;
+      setThinking(true);
+      sentLen.current = text.length;
+      try {
+        const res = await fetch("/api/coach", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ text, checklist: coachRef.current.checklist }),
+        });
+        if (res.ok) {
+          const d = (await res.json()) as Partial<Coach>;
+          const next = {
+            ask: Array.isArray(d.ask) ? d.ask.slice(0, 2) : [],
+            propose: Array.isArray(d.propose) ? d.propose.slice(0, 2) : [],
+            checklist: Array.isArray(d.checklist) ? d.checklist : coachRef.current.checklist,
+          };
+          setCoach(next);
+          onChecklist?.(next.checklist);
+        }
+      } catch {
+        /* riprova al prossimo giro */
+      } finally {
+        busy = false;
+        setThinking(false);
+      }
+    };
+    const id = window.setInterval(() => void tick(), 15000);
+    return () => window.clearInterval(id);
+  }, [onChecklist]);
+
   const [lines, setLines] = useState<string[]>([]);
   const [interim, setInterim] = useState("");
   const [tips, setTips] = useState<Tip[]>([]);
@@ -46,7 +96,8 @@ export function LiveCopilot({ seconds, level, onCancel, onStop }: Props) {
     if (!supported) return;
     return startLiveSpeech(
       (text) => {
-        setLines((l) => [...l, text]);
+        linesRef.current = [...linesRef.current, text];
+        setLines(linesRef.current);
         for (const rule of LIVE_RULES) {
           if (fired.current.has(rule.id) || !rule.match.test(text)) continue;
           fired.current.add(rule.id);
@@ -104,6 +155,57 @@ export function LiveCopilot({ seconds, level, onCancel, onStop }: Props) {
         <aside className="flex min-h-0 flex-col bg-muted/30">
           <h2 className="border-b border-border px-4 py-2 text-sm font-semibold text-foreground">🧠 Suggerimenti Strategici & Alert Live</h2>
           <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-3">
+            <div className="rounded-lg border border-primary/40 bg-card p-3">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-primary">
+                <MessageCircleQuestion className="size-4" /> Chiedi adesso
+                {thinking ? <Loader2 className="ml-auto size-3.5 animate-spin" /> : null}
+              </p>
+              {coach.ask.length ? (
+                <ul className="mt-2 space-y-1.5">
+                  {coach.ask.map((q, i) => (
+                    <li key={i} className="animate-fade-in text-sm font-semibold text-foreground">→ {q}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-2 text-sm text-muted-foreground">Dopo i primi scambi ti dico cosa chiedere.</p>
+              )}
+              {coach.propose.length ? (
+                <div className="mt-3 border-t border-border pt-2">
+                  <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-success">
+                    <Lightbulb className="size-4" /> Proponi
+                  </p>
+                  <ul className="mt-1.5 space-y-1.5">
+                    {coach.propose.map((q, i) => (
+                      <li key={i} className="animate-fade-in text-sm text-foreground">{q}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+            {coach.checklist.length ? (
+              <div className="rounded-lg border border-border bg-card p-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                  Cosa manca · {coach.checklist.filter((c) => c.status !== "todo").length}/{coach.checklist.length}
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {coach.checklist.map((c, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      {c.status === "ok" ? (
+                        <CircleCheck className="mt-0.5 size-4 shrink-0 text-success" />
+                      ) : c.status === "na" ? (
+                        <MinusCircle className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                      ) : (
+                        <CircleDashed className="mt-0.5 size-4 shrink-0 text-warning" />
+                      )}
+                      <span className={c.status === "todo" ? "font-medium text-foreground" : "text-muted-foreground"}>
+                        {c.item}
+                        {c.note ? <span className="text-xs"> — {c.note}</span> : null}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             {tips.length === 0 ? (
               <p className="text-sm text-muted-foreground">I suggerimenti compaiono qui quando il cliente parla di prezzi, hardware, altri bandi, rimborso o requisiti.</p>
             ) : (
