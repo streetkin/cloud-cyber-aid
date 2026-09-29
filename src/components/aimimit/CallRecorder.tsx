@@ -96,9 +96,14 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
   };
 
   if (phase === "recording") {
-    const bar = (
-      <div className="flex items-center gap-3 rounded-lg border border-danger/40 bg-danger-soft px-3 py-2">
-        <p className="flex-1 text-sm font-semibold text-danger">Registrazione in corso · {fmt(seconds)}</p>
+    const bar = (reason: string) => (
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-danger/40 bg-danger-soft px-3 py-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-danger">Registrazione in corso · {fmt(seconds)}</p>
+          <p className="mt-0.5 break-words text-xs text-foreground">
+            Pannello suggerimenti chiuso per un errore: <span className="font-mono">{reason}</span>
+          </p>
+        </div>
         <Button type="button" size="sm" variant="ghost" onClick={cancel}>Annulla</Button>
         <Button type="button" size="sm" onClick={stop} className="bg-danger text-danger-foreground hover:bg-danger/90">
           Termina e analizza
@@ -129,15 +134,16 @@ export function CallRecorder({ disabled, onTranscript }: Props) {
   );
 }
 
-class SafeBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
-  override state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
+class SafeBoundary extends Component<{ fallback: (reason: string) => ReactNode; children: ReactNode }, { failed: boolean; reason: string }> {
+  override state = { failed: false, reason: "" };
+  static getDerivedStateFromError(error: unknown) {
+    const reason = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+    return { failed: true, reason: reason.slice(0, 300) };
   }
   override componentDidCatch(error: unknown) {
     console.error("Copilota live non disponibile", error);
   }
   override render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
+    return this.state.failed ? this.props.fallback(this.state.reason) : this.props.children;
   }
 }
