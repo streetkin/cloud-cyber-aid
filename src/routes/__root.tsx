@@ -75,7 +75,9 @@ function RootError({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-const ErrorComponent: ErrorRouteComponent = RootError;
+// Il tipo del router prevede anche un componente lazy: qui l'errore va renderizzato subito,
+// senza passare da un boundary di sospensione, quindi il componente viene usato com'è.
+const ErrorComponent = RootError as unknown as ErrorRouteComponent;
 
 
 
