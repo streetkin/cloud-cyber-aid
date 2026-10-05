@@ -75,6 +75,10 @@ function RootError({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const ErrorComponent: ErrorRouteComponent = RootError;
+
+
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
