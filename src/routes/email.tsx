@@ -21,10 +21,6 @@ export const Route = createFileRoute("/email")({
 
 const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-function EmailCard() {
-  return null;
-}
-
 function EmailPage() {
   const [query, setQuery] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
