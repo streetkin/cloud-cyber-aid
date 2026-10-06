@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmailRouteImport } from './routes/email'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ApiCoachRouteImport } from './routes/api/coach'
 import { Route as ApiDiarizeRouteImport } from './routes/api/diarize'
@@ -20,6 +21,11 @@ import { Route as ClienteThreadIdRouteImport } from './routes/cliente.$threadId'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailRoute = EmailRouteImport.update({
+  id: '/email',
+  path: '/email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -55,6 +61,7 @@ const ClienteThreadIdRoute = ClienteThreadIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/email': typeof EmailRoute
   '/faq': typeof FaqRoute
   '/api/coach': typeof ApiCoachRoute
   '/api/diarize': typeof ApiDiarizeRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/email': typeof EmailRoute
   '/faq': typeof FaqRoute
   '/api/coach': typeof ApiCoachRoute
   '/api/diarize': typeof ApiDiarizeRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/email': typeof EmailRoute
   '/faq': typeof FaqRoute
   '/api/coach': typeof ApiCoachRoute
   '/api/diarize': typeof ApiDiarizeRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/email'
     | '/faq'
     | '/api/coach'
     | '/api/diarize'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/email'
     | '/faq'
     | '/api/coach'
     | '/api/diarize'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/email'
     | '/faq'
     | '/api/coach'
     | '/api/diarize'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EmailRoute: typeof EmailRoute
   FaqRoute: typeof FaqRoute
   ApiCoachRoute: typeof ApiCoachRoute
   ApiDiarizeRoute: typeof ApiDiarizeRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email': {
+      id: '/email'
+      path: '/email'
+      fullPath: '/email'
+      preLoaderRoute: typeof EmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EmailRoute: EmailRoute,
   FaqRoute: FaqRoute,
   ApiCoachRoute: ApiCoachRoute,
   ApiDiarizeRoute: ApiDiarizeRoute,
