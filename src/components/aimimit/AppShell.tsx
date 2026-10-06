@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { BookOpen, Menu, MessageSquare, PanelLeftClose, Plus, Trash2, X } from "lucide-react";
+import { BookOpen, Mail, Menu, MessageSquare, PanelLeftClose, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createThread, deleteThread, loadThreads, type Thread } from "@/lib/aimimit/threads";
