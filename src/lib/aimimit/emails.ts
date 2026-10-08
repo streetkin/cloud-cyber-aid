@@ -37,7 +37,15 @@ Le chiedo solo due risposte pronte, nessun documento:
 1. quali software o strumenti digitali usate oggi;
 2. cosa vorrebbe migliorare o aggiungere nella sua attività entro il prossimo anno.
 
-Partita IVA e PEC le abbiamo già noi, quindi non deve preparare nulla di burocratico.
+COSA VERIFICARE PRIMA DI ANDARE AVANTI
+- Il voucher copre software in abbonamento, servizi cloud e sicurezza informatica; non copre
+  l'acquisto di computer, telefoni, stampanti o altri apparecchi.
+- Vale solo per le novità che introduce: il semplice rinnovo di un servizio che già usa non è ammesso.
+- Serve una connessione internet da almeno 30 Mbps e un'attività già attiva.
+- I fondi sono a esaurimento e le domande sono valutate in ordine di arrivo.
+
+Se uno di questi punti non rientra nel suo caso, o l'idea non le interessa, mi risponda anche
+solo "non ora": chiudiamo qui, senza impegno, e non la disturbo oltre.
 
 Nel frattempo può leggere i dettagli sulla pagina ufficiale del bando:
 ${LINK}
