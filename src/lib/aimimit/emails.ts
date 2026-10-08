@@ -235,21 +235,6 @@ Se invece vuole procedere, mi indichi un momento per 10 minuti di telefonata.
 Cordiali saluti,
 ${SIGN}`,
   },
-  {
-    id: "conferma",
-    label: "Conferma appuntamento",
-    hint: "Dopo che ha scelto giorno e ora della call.",
-    subject: "Conferma call — [GIORNO] alle [ORA]",
-    body: `Gentile [NOME],
-le confermo la nostra telefonata di [GIORNO] alle [ORA].
-Prepari solo due minuti per dirmi: chi ha la partita IVA e la PEC, che software usate oggi
-e cosa vorrebbe migliorare. Al resto pensiamo noi.
-
-Se l'orario non va più, mi risponda e sposto senza problemi.
-
-Cordiali saluti,
-${SIGN}`,
-  },
 ];
 
 export const emailFull = (e: ReadyEmail) => `Oggetto: ${e.subject}\n\n${e.body}`;
