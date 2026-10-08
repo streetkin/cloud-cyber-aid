@@ -63,7 +63,7 @@ function EmailPage() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Cerca: impegnato, documenti, promemoria…"
+                placeholder="Cerca: lancio, meet, impegnato, documenti…"
                 className="h-11 w-full rounded-lg border border-input bg-card pl-9 pr-9 text-base outline-none focus:border-primary"
               />
               {query ? (

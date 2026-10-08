@@ -14,6 +14,67 @@ const SIGN = `[TUO NOME] — Conflavoro AI
 
 export const READY_EMAILS: ReadyEmail[] = [
   {
+    id: "lancio",
+    label: "Prima della call: presentami e spiega il voucher",
+    hint: "Contatto assegnato via email, non sa ancora nulla del bando: scrivigli prima di chiamarlo.",
+    subject: "Voucher Cloud & Cybersecurity — la call di oggi alle [ORA]",
+    body: `Gentile [NOME],
+sono [TUO NOME] di Conflavoro AI e la contatto perché la sua attività può accedere al Voucher
+Cloud & Cybersecurity, il contributo del Ministero delle Imprese e del Made in Italy.
+
+DI COSA SI TRATTA
+Il Ministero rimborsa il 50% della spesa (fino a 20.000 €) a chi introduce servizi cloud,
+sicurezza informatica e software in abbonamento nella propria attività. È un fondo perduto:
+non è un finanziamento e non è uno sconto in fattura. Le domande si presentano su Invitalia,
+in ordine di arrivo, con risorse a esaurimento.
+
+LA TELEFONATA DI OGGI
+Oggi alle [ORA] la chiamo io: servono circa 10 minuti per spiegarle in parole semplici come
+funziona e capire se la sua attività rientra. Se non le interessa chiudiamo lì, senza impegno,
+e non la disturbo oltre.
+
+Le chiedo solo due risposte pronte, nessun documento:
+1. quali software o strumenti digitali usate oggi;
+2. cosa vorrebbe migliorare o aggiungere nella sua attività entro il prossimo anno.
+
+Partita IVA e PEC le abbiamo già noi, quindi non deve preparare nulla di burocratico.
+
+Nel frattempo può leggere i dettagli sulla pagina ufficiale del bando:
+${LINK}
+
+A dopo,
+${SIGN}`,
+  },
+  {
+    id: "meet",
+    label: "Dopo la call: conferma il meet e cosa preparare",
+    hint: "Call fatta e colloquio su Meet fissato: scrivigli subito dopo, prima della riunione.",
+    subject: "Ci vediamo su Meet il [GIORNO] alle [ORA] — prepari queste quattro cose",
+    body: `Gentile [NOME],
+grazie per la telefonata di prima. Le confermo il colloquio su Meet di [GIORNO] alle [ORA]:
+il link le arriva qualche minuto prima da me.
+
+Mi raccomando, prepari solo queste quattro cose — bastano due minuti, nessun documento:
+1. quali software usate oggi e dove tenete i dati;
+2. cosa vorrebbe migliorare o aggiungere entro il prossimo anno;
+3. un budget indicativo che ha in mente per il progetto (il piano minimo agevolabile è 4.000 €);
+4. se ha già un preventivo o un fornitore individuato: lo verifichiamo noi nell'elenco MIMIT.
+
+DI COSA PARLEREMO
+Le mostro come si imposta il progetto per il Voucher Cloud & Cybersecurity. Il fondo perduto del
+MIMIT copre il 50% della spesa per servizi cloud, sicurezza informatica e software in
+abbonamento, fino a 20.000 €: le dico quali voci sono ammesse, quali no e quanto vale
+indicativamente il suo caso.
+
+Pagina ufficiale del bando:
+${LINK}
+
+Se l'orario non va più, mi risponda e sposto senza problemi.
+
+A presto,
+${SIGN}`,
+  },
+  {
     id: "recall",
     label: "Cliente impegnato → fissiamo la call",
     hint: "Il caso tipico: l'hai chiamato, era occupato e ti ha chiesto una email.",
